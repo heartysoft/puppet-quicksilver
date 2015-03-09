@@ -1,13 +1,7 @@
 #
-define quicksilver::web_baseline($msdeploy_path, $dotnet_version='45') {
-    file {'c:\packages':
-        ensure => directory
-    }
-    ->
-    class { 'dotnet':
-      version => "$dotnet_version",
-    }
-    ->
+define quicksilver::web_baseline($msdeploy_path) {
+    $msdeploy_file = basename($msdeploy_path)
+
     windowsfeature { 'IIS':
       feature_name => [
         'Web-Static-Content',
@@ -27,18 +21,20 @@ define quicksilver::web_baseline($msdeploy_path, $dotnet_version='45') {
       ]
     }
     ->
+    file { "C:/packages/$msdeploy_file":
+        source => $msdeploy_path,
+        source_permissions => ignore,
+        ensure => present,
+    }
+    ->
     package { 'Microsoft Web Deploy 3.5':
         ensure => present,
-        source => $msdeploy_path,
+        source => "C:/packages/$msdeploy_file",
         install_options => [ '/q', '/norestart' ],
     }
     ~>
     exec { 'regiis':
         command => "C:\\windows\\Microsoft.NET\\Framework64\\v4.0.30319\\aspnet_regiis.exe -i",
         refreshonly => true,    
-    }
-
-    reboot { 'after':
-        subscribe       => Class['dotnet'],
     }
 }
