@@ -1,8 +1,9 @@
 #
 define quicksilver::qs_baseline($dotnet_version='45') {
 	file { ["C:/quicksilver_installed",
-            "C:/quicksilver_installers",
-            "C:/packages"] :
+            "C:/quicksilver_installers"
+            #"C:/packages" already in dotnet
+            ] :
         ensure => directory,
     }
     ->
