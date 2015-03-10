@@ -22,13 +22,13 @@ define quicksilver::qs_website($environment, $publishroot, $version, $sitename=$
         command  => "\$sh=New-Object -COM Shell.Application;\$sh.namespace((Convert-Path 'C:/quicksilver_installers/$sitename/${version}/')).Copyhere(\$sh.namespace((Convert-Path 'C:/quicksilver_installers/$sitename/${version}.zip')).items(), 16)",
         provider => powershell,
         refreshonly => true,
-        subscribe => Exec['quicksilver_qs_website_${sitename}_should_install'],                   
+        subscribe => Exec["quicksilver_qs_website_${sitename}_should_install"],                   
     }
     ~>
     exec { "quicksilver_qs_website_${sitename}_install":
         command => "C:/quicksilver_installers/$sitename/$version/install.bat $environment /Y",
         refreshonly => true,
-        subscribe => Exec['quicksilver_qs_website_${sitename}_should_install'],                      
+        subscribe => Exec["quicksilver_qs_website_${sitename}_should_install"],                      
     }
     ~>
     exec { "version file for qs_website ${sitename}" :
