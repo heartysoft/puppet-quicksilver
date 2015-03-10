@@ -2,7 +2,7 @@
 define quicksilver::qs_website($environment, $publishroot, $version, $sitename=$title) {
     $expected_version_file = "C:\\quicksilver_installed\\${sitename}.txt"
 
-    exec { 'quicksilver_qs_website_${sitename}_should_install':
+    exec { "quicksilver_qs_website_${sitename}_should_install":
         provider=> powershell,
         unless => "if((test-path \"$expected_version_file\") -and (\"${environment}-${version}\" -eq (get-content \"$expected_version_file\").Trim())){exit 0} else {exit 1}",
         command => "exit 0",
